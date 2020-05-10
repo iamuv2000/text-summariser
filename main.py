@@ -1,10 +1,25 @@
+#Module imports
+from flask import Flask
+from flask import render_template, jsonify, request
 from summarizer import summarize
 
+# Creates a Flask application, named app
+app = Flask(__name__)
 
-text = "The indefinite article takes two forms. It’s the word a when it precedes a word that begins with a consonant. It’s the word an when it precedes a word that begins with a vowel. The indefinite article indicates that a noun refers to a general idea rather than a particular thing. For example, you might ask your friend, “Should I bring a gift to the party?” Your friend will understand that you are not asking about a specific type of gift or a specific item. “I am going to bring an apple pie,” your friend tells you. Again, the indefinite article indicates that she is not talking about a specific apple pie. Your friend probably doesn’t even have any pie yet. Sometimes an article modifies a noun that is also modified by an adjective. The usual word order is article + adjective + noun. If the article is indefinite, choose a or an based on the word that immediately follows it. Uncountable nouns include intangible things (e.g., information, air), liquids (e.g., milk, wine), and things that are too large or numerous to count (e.g., equipment, sand, wood). Because these things can’t be counted, you should never use a or an with them—remember, the indefinite article is only for singular nouns. Possessive pronouns can help identify whether you’re talking about specific or nonspecific items. As we’ve seen, articles also indicate specificity. But if you use both a possessive pronoun and an article at the same time, readers will become confused. Possessive pronouns are words like his, my, our, its, her, and their. "
+# Route to get main html page
+@app.route("/")
+def hello():
+    return render_template('index.html')
 
-no_of_sentence = 10
+# Route to get text summary
+@app.route('/api/getSummary', methods=['POST'])
+def api_all():
+    text = request.json['text']
+    no_of_sentence = request.json['no_of_sentence']
+    summary_text = summarize(text , no_of_sentence)
+    return jsonify(summary_text)
 
-summary_text = summarize(text , no_of_sentence)
 
-print(summary_text)
+# Run the application
+if __name__ == "__main__":
+    app.run(debug=True)
